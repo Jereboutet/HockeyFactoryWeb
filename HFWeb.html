@@ -1,0 +1,607 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hockey Factory — Escuela de Perfeccionamiento</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+  --black: #020617;       
+  --white: #F8FAFC;       
+  
+  --green: #0EA5E9;       
+  --green-light: #38BDF8;  
+  --green-pale: #7DD3FC;  
+  --accent: #FFFFFF;       
+
+  --gray: #64748B;         
+  --border: rgba(248,250,252,0.08);
+}
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed; top: 0; left: 0; width: 10px; height: 10px;
+    background: var(--accent); border-radius: 50%; pointer-events: none;
+    z-index: 9999; transition: transform 0.15s, width 0.2s, height 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor.hover { width: 28px; height: 28px; background: transparent; border: 1.5px solid var(--accent); }
+
+  /* ─── NAV ─────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.5rem 2.5rem;
+    border-bottom: 0.5px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled { background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); border-color: var(--border); }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--white); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--gray); text-decoration: none; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent); color: var(--black); padding: 8px 20px;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600; text-decoration: none; border-radius: 2px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--green-light); transform: translateY(-1px); }
+
+  /* ─── HERO ────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr; align-items: end;
+    padding: 0 2.5rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 40%, rgba(45,106,63,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(232,200,74,0.06) 0%, transparent 60%);
+  }
+  .hero-grid-lines {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(0deg, var(--white) 0, var(--white) 1px, transparent 1px, transparent 80px),
+                      repeating-linear-gradient(90deg, var(--white) 0, var(--white) 1px, transparent 1px, transparent 80px);
+  }
+  .hero-left { position: relative; z-index: 1; padding-bottom: 2rem;max-width: 700px;
+  margin-left: 5vw; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 2rem;
+    animation: fadeUp 0.8s 0.2s both;
+  }
+  .hero-tag::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+/* ─── HERO TITLE PRO ────────────────────────── */
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(140px, 13vw, 190px);
+  line-height: 0.85;
+  letter-spacing: 5px;
+  color: var(--white);
+
+  /* efecto visual */
+  text-shadow: 0 10px 40px rgba(56,189,248,0.15);
+
+  /* animación más pro */
+  animation: titleReveal 1s ease-out 0.3s both;
+}
+
+h1 .line-green {
+  display: block;
+
+  background: linear-gradient(90deg, #38BDF8, #7DD3FC);
+
+  /* compatibilidad */
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  font-size: 0.9em;
+}
+
+/* animación nueva */
+@keyframes titleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+  .hero-actions {
+    margin-top: 2.5rem; display: flex; gap: 1rem; align-items: center;
+    animation: fadeUp 0.8s 0.65s both;
+  }
+  .btn-primary {
+    background: var(--accent); color: var(--black);
+    padding: 14px 32px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600; text-decoration: none; border-radius: 2px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #f0d060; transform: translateY(-2px); }
+  .btn-ghost {
+    color: var(--white); font-size: 13px; letter-spacing: 1.5px;
+    text-transform: uppercase; text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: gap 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { gap: 14px; color: var(--accent); }
+  .btn-ghost::after { content: '→'; }
+
+ .hero-right {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* clave */
+  gap: 12px; /* separación real */
+  width: 100%;
+  max-width: 320px; /* controla el ancho total */
+  margin-left: auto; /* los pega a la derecha prolijo */
+}
+  .hero-stat-block {
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(6px);
+  width: 100%;
+  min-height: 110px; /* todos misma altura */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-stat-num {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-stat-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 14px;
+}
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--gray); font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    animation: bounce 2s infinite 1.5s;
+    z-index: 1;
+  }
+  .hero-scroll::after { content: '↓'; font-size: 16px; color: var(--accent); }
+
+/* ─── MARQUEE ─────────────────────────────────────── */
+.marquee-wrap {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  padding: 18px 0;
+  margin: 40px 0;
+  background: transparent;
+}
+
+.marquee-track {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+  animation: none;
+}
+
+.marquee-item {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  color: #8ecae6;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  opacity: 0.8;
+}
+
+.marquee-item::after {
+  content: '•';
+  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+}
+
+  /* ─── ABOUT ───────────────────────────────────────── */
+  #sobre {
+    padding: 7rem 2.5rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+  }
+  .about-label {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .about-label::before { content: ''; width: 30px; height: 1px; background: var(--accent); }
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1; letter-spacing: 2px; margin-bottom: 1.5rem;
+  }
+  h2 em { color: var(--green-light); font-style: normal; }
+  .about-body { font-size: 16px; line-height: 1.8; color: rgba(245,242,235,0.6); }
+  .about-body p + p { margin-top: 1rem; }
+  .about-visual {
+    position: relative; border: 0.5px solid var(--border);
+    background: rgba(45,106,63,0.08); padding: 3rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .about-visual::before {
+    content: ''; position: absolute; top: -1px; left: 3rem; right: 3rem; height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--accent), var(--green));
+  }
+  .about-feature {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border);
+  }
+  .about-feature:last-child { border-bottom: none; padding-bottom: 0; }
+  .about-feature-icon {
+    width: 40px; height: 40px; background: rgba(45,106,63,0.3); border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .about-feature-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; letter-spacing: 0.5px; }
+  .about-feature-desc { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* ─── PROGRAMAS ───────────────────────────────────── */
+  #programas {
+    padding: 6rem 2.5rem;
+    border-top: 0.5px solid var(--border);
+    background: rgba(255,255,255,0.01);
+  }
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .programs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 0.5px solid var(--border); }
+  .program-card {
+    padding: 2.5rem 2rem; background: var(--black);
+    border-right: 0.5px solid var(--border);
+    transition: background 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .program-card:last-child { border-right: none; }
+  .program-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: var(--green); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .program-card:hover { background: rgba(14,165,233,0.08); }
+  .program-card:hover::after { transform: scaleX(1); }
+  .program-num { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: rgba(255,255,255,0.06); line-height: 1; margin-bottom: 1.5rem; }
+  .program-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; margin-bottom: 0.8rem; color: var(--white); }
+  .program-desc { font-size: 14px; line-height: 1.7; color: var(--gray); margin-bottom: 1.5rem; }
+  .program-tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(45,106,63,0.2); border: 0.5px solid rgba(45,106,63,0.4);
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green-pale);
+    border-radius: 2px;
+  }
+
+  /* ─── CTA ─────────────────────────────────────────── */
+  #contacto {
+    padding: 7rem 2.5rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    border-top: 0.5px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  #contacto::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 70% at 80% 50%, rgba(45,106,63,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 10px; }
+  .cta-label::before { content: ''; width: 30px; height: 1px; background: var(--accent); }
+  .cta-sub { font-size: 16px; color: rgba(245,242,235,0.55); line-height: 1.7; margin-top: 1.5rem; max-width: 420px; }
+  .contact-box {
+    border: 0.5px solid var(--border); padding: 2.5rem;
+    background: rgba(255,255,255,0.02); backdrop-filter: blur(4px);
+    position: relative; z-index: 1;
+  }
+  .contact-box-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; margin-bottom: 1.5rem; color: var(--white); }
+  .contact-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 0; border-bottom: 0.5px solid var(--border);
+  }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-icon { font-size: 18px; width: 36px; text-align: center; flex-shrink: 0; }
+  .contact-info-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
+  .contact-info-val { font-size: 14px; color: var(--white); margin-top: 2px; }
+  .contact-info-val a { color: var(--accent); text-decoration: none; }
+  .contact-info-val a:hover { text-decoration: underline; }
+
+  .no-arrow::after {
+  content: '';
+}
+
+  /* ─── FOOTER ──────────────────────────────────────── */
+  footer {
+    border-top: 0.5px solid var(--border); padding: 2rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 12px; color: var(--gray); }
+  .footer-ig { font-size: 12px; color: var(--gray); text-decoration: none; letter-spacing: 1px; transition: color 0.2s; }
+  .footer-ig:hover { color: var(--accent); }
+
+  /* ─── ANIMATIONS ──────────────────────────────────── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ──────────────────────────────────── */
+  @media (max-width: 860px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
+    .hero-right { flex-direction: row; justify-content: flex-start; flex-wrap: wrap; }
+    .hero-stat-block { width: auto; flex: 1; min-width: 140px; }
+    #sobre, #contacto { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
+    .programs-grid { grid-template-columns: 1fr; }
+    .program-card { border-right: none; border-bottom: 0.5px solid var(--border); }
+    .program-card:last-child { border-bottom: none; }
+    #programas { padding: 4rem 1.5rem; }
+    footer { flex-direction: column; text-align: center; padding: 1.5rem; }
+    body { cursor: auto; }
+    .cursor { display: none; }
+  }
+
+
+.btn-whatsapp {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  padding: 14px 20px;
+  background: #25D366;
+  color: #0b0b0b;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: transform 0.15s, filter 0.2s;
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Hockey<span>Factory</span></a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Entrenamiento personalizado</a></li>
+    <li><a href="#programas">Programas</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a href="#contacto" class="nav-cta">Consultá</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-left">
+    <p class="hero-tag">Espacio para quienes marcar la diferencia</p>
+    <h1>
+      HOCKEY
+      <span class="line-green">FACTORY</span>
+    </h1>
+    <p class="hero-sub">Entrenamiento individual para jugadoras y arqueras. Trabajo específico, aplicado al juego real.</p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary">Empezá hoy</a>
+      <a href="#programas" class="btn-ghost">Ver programas</a>
+    </div>
+  </div>
+
+<div class="hero-right">
+
+  <div class="hero-stat-block">
+    <div class="hero-stat-num">Alto rendimiento</span></div>
+    <div class="hero-stat-label">Entrenamiento individual especifico</div>
+  </div>
+
+  <div class="hero-stat-block">
+    <div class="hero-stat-num">Mayor rendimiento</div>
+    <div class="hero-stat-label">Progreso sesión a sesión</div>
+  </div>
+
+  <div class="hero-stat-block">
+    <div class="hero-stat-num">Ubicación</div>
+    <div class="hero-stat-label">Parque Norte · CABA</div>
+  </div>
+
+</div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+
+<section class="programs">
+<!-- MARQUEE -->
+<section class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item">Entrenamiento individual</div>
+    <div class="marquee-item">Arrastre</div>
+    <div class="marquee-item">Arqueras</div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="reveal">
+    <p class="about-label">Programa de perfeccionamiento individual</p>
+    <h2>Nace <em>Hockey Factory</em></h2>
+    <div class="about-body">
+      <p> Los que quieren más, se preparan diferente. Un espacio para quienes quieren marcar la diferencia.</p>
+      <p>Trabajamos con jugadoras de todos los niveles —desde inferiores hasta primera— y con arqueras que quieren dominar su posición. Cada sesión está diseñada para vos.</p>
+    </div>
+  </div>
+  <div class="about-visual reveal">
+    <div class="about-feature">
+      <div class="about-feature-icon">🎯</div>
+      <div>
+        <div class="about-feature-title">Diagnóstico inicial</div>
+        <div class="about-feature-desc">Analizamos tu juego desde cero para construir un plan personalizado y medible.</div>
+      </div>
+    </div>
+    <div class="about-feature">
+      <div class="about-feature-icon">📈</div>
+      <div>
+        <div class="about-feature-title">Seguimiento continuo</div>
+        <div class="about-feature-desc">Cada sesión tiene objetivos concretos. Medimos tu progreso en tiempo real.</div>
+      </div>
+    </div>
+    <div class="about-feature">
+      <div class="about-feature-icon">🏑</div>
+      <div>
+        <div class="about-feature-title">Foco en el juego real</div>
+        <div class="about-feature-desc">Trabajamos los gestos técnicos y decisiones que aparecen en el partido.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMAS -->
+<section id="programas">
+  <div class="section-header reveal">
+    <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Programas</p>
+    <h2>Elegí tu <em>camino</em></h2>
+  </div>
+<div class="programs-grid reveal">
+  <div class="program-card">
+    <div class="program-num">01</div>
+    <div class="program-title">Perfeccionamiento de arrastre</div>
+    <div class="program-desc">Para jugadoras de campo que buscan mejorar la técnica, potencia y precisión en el arrastre aplicado al juego real.</div>
+    <span class="program-tag">Precisión · Potencia</span>
+  </div>
+
+  <div class="program-card">
+    <div class="program-num">02</div>
+    <div class="program-title">Entrenamiento de arqueras</div>
+    <div class="program-desc">Trabajo específico en reacción, posicionamiento y toma de decisiones para rendir mejor en situaciones reales de partido.</div>
+    <span class="program-tag">Reacción · Decisión</span>
+  </div>
+
+  <div class="program-card">
+    <div class="program-num">03</div>
+    <div class="program-title">Plan intensivo</div>
+    <div class="program-desc">4 clases con seguimiento y mejor valor por sesión</div>
+    <span class="program-tag">Más económico · Más progreso</span>
+  </div>
+</div>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="reveal">
+    <p class="cta-label">¿Arrancamos?</p>
+    <h2>Sumate a <em>Hockey Factory</em></h2>
+    <p class="cta-sub">Mandanos un mensaje por Instagram o WhatsApp y coordinamos una primera sesión de diagnóstico. Sin compromiso.</p>
+  </div>
+  <div class="contact-box reveal">
+    <div class="contact-box-title">Contacto directo</div>
+    <div class="contact-item">
+      <div class="contact-icon">📱</div>
+      <div>
+        <a href="https://wa.me/5491123201717?text=Hola%20quiero%20mas%20informacion%20sobre%20hockey%20factory" 
+   target="_blank" 
+   class="btn-whatsapp" 
+   style="display:block;text-align:center;margin-top:1rem;">
+   Escribinos por WhatsApp
+</a>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">📍</div>
+      <div>
+        <div class="contact-info-label">Ubicación</div>
+        <div class="contact-info-val">Parque Norte, caba </div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">🕐</div>
+      <div>
+        <div class="contact-info-label">Modalidad</div>
+        <div class="contact-info-val">Clases individuales · Miercoles 18hs</div>
+      </div>
+</div>
+<a href="https://instagram.com/hockeyfactory__" 
+   target="_blank" 
+   class="btn-ghost no-arrow" 
+   style="display:block;text-align:center;margin-top:1.5rem;font-size:32px;">
+  Seguinos en Instagram
+</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Hockey<span>Factory</span></div>
+  <div class="footer-copy">© 2025 Hockey Factory · CABA, Argentina</div>
+  <a href="https://instagram.com/hockeyfactory__" target="_blank" class="footer-ig">@hockeyfactory__</a>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // Navbar on scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
